@@ -72,33 +72,6 @@ const Dashboard = ({ authedUser, questions }) => {
           </div>
         </div>
       </div>
-      {/* <div className="container mt-5 text-center border">
-        <div className="row">
-          <div className="col border-bottom py-3">
-            <h4>New questions</h4>
-          </div>
-        </div>
-        <div className="row justify-content-center py-3">
-          {newQuestions.map((question) => (
-            <Question key={question.id} question={question}></Question>
-          ))}
-        </div>
-      </div>
-
-      <div className="container mt-5 text-center border">
-        <div className="row">
-          <div className="col border-bottom py-3">
-            <h4>Done</h4>
-          </div>
-        </div>
-        <div className="row justify-content-center py-3">
-          <div className="row justify-content-center py-3">
-            {doneQuestions.map((question) => (
-              <Question key={question.id} question={question}></Question>
-            ))}
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };
