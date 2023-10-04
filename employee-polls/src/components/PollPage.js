@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import { handleAnswerQuestion } from "../actions/questions";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
 
 const withRouter = (Component) => {
   const ComponentWithRouterProp = (props) => {
@@ -13,25 +14,33 @@ const withRouter = (Component) => {
   return ComponentWithRouterProp;
 };
 
-const PollPage = ({ questions, id, users, dispatch }) => {
-  const navigate = useNavigate();
-  const question = questions.find((question) => question.id === id);
+const PollPage = ({ question, optionClicked, users, dispatch }) => {
+  const [activeOption, setActiveOption] = useState(optionClicked);
+
   const avatarURL = users[question.author].avatarURL;
 
   const handleChooseOptionOne = (e) => {
     e.preventDefault();
-    dispatch(handleAnswerQuestion(question.id, 'optionOne')).then(() => {
-      navigate('/');
-    });
-  }
+    if (activeOption) return;
+    setActiveOption("optionOne");
+    dispatch(handleAnswerQuestion(question.id, "optionOne"));
+  };
 
   const handleChooseOptionTwo = (e) => {
     e.preventDefault();
-    dispatch(handleAnswerQuestion(question.id, 'optionTwo')).then(() => {
-      navigate('/');
-    });
-  }
+    if (activeOption) return;
+    setActiveOption("optionTwo");
+    dispatch(handleAnswerQuestion(question.id, "optionTwo"));
+  };
 
+  const calcPercentageVoted = () => {
+    const optionOneVoted = question.optionOne.votes.length;
+    const optionTwoVoted = question.optionTwo.votes.length;
+    const totalVoted = optionOneVoted + optionTwoVoted;
+    return activeOption === "optionOne"
+      ? ` ${((optionOneVoted / totalVoted) * 100).toFixed(2)}%`
+      : ` ${((optionTwoVoted / totalVoted) * 100).toFixed(2)}%`;
+  };
   return (
     <div className="container mt-5 text-center">
       <h3>Poll by {question.author}</h3>
@@ -49,7 +58,25 @@ const PollPage = ({ questions, id, users, dispatch }) => {
           <div className="card w-100">
             <div className="card-body">
               <p className="card-title">{question.optionOne.text}</p>
-              <button type="button" className="btn btn-primary w-100" onClick={handleChooseOptionOne}>Click</button>
+              <button
+                type="button"
+                className={
+                  "btn w-100 " +
+                  (activeOption === "optionOne" ? "btn-success" : "btn-primary")
+                }
+                onClick={handleChooseOptionOne}
+              >
+                Click
+              </button>
+              {activeOption === "optionOne" ? (
+                <p>
+                  {question.optionOne.votes.length +
+                    " voted," +
+                    calcPercentageVoted()}
+                </p>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
@@ -57,7 +84,25 @@ const PollPage = ({ questions, id, users, dispatch }) => {
           <div className="card w-100">
             <div className="card-body">
               <p className="card-title">{question.optionTwo.text}</p>
-              <button type="button" className="btn btn-primary w-100" onClick={handleChooseOptionTwo}>Click</button>
+              <button
+                type="button"
+                className={
+                  "btn w-100 " +
+                  (activeOption === "optionTwo" ? "btn-success" : "btn-primary")
+                }
+                onClick={handleChooseOptionTwo}
+              >
+                Click
+              </button>
+              {activeOption === "optionTwo" ? (
+                <p>
+                  {question.optionTwo.votes.length +
+                    " voted," +
+                    calcPercentageVoted()}
+                </p>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
@@ -66,15 +111,23 @@ const PollPage = ({ questions, id, users, dispatch }) => {
   );
 };
 
-const mapStateToProps = ({ questions, users}, props) => {
+const mapStateToProps = ({ questions, users, authedUser }, props) => {
   const { id } = props.router.params;
+  const question = Object.values(questions)
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .find((question) => question.id === id);
+  let optionClicked;
+  if (question.optionOne.votes.includes(authedUser.id)) {
+    optionClicked = "optionOne";
+  }
+  if (question.optionTwo.votes.includes(authedUser.id)) {
+    optionClicked = "optionTwo";
+  }
 
   return {
-    id,
     users,
-    questions: Object.values(questions).sort((a, b) => {
-      return b.timestamp - a.timestamp;
-    }),
+    question,
+    optionClicked,
   };
 };
 

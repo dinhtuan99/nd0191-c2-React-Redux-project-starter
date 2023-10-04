@@ -37,7 +37,7 @@ const Login = ({ dispatch }) => {
     dispatch(handleLoginUser(username, password));
     setUsername("");
     setPassword("");
-    navigate(state?.path || "/");
+    navigate(state?.from?.pathname || "/");
   };
 
   return (

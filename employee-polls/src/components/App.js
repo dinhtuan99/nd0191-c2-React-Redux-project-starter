@@ -5,6 +5,7 @@ import Dashboard from "./Dashboard";
 import LoadingBar from "react-redux-loading-bar";
 import Leaderboard from "./Leaderboard";
 import Login from "./Login";
+import NotFound from "./NotFound";
 import PollCreation from "./PollCreation";
 import PollPage from "./PollPage";
 import Nav from "./Nav";
@@ -66,6 +67,7 @@ const App = (props) => {
           />
 
           <Route path="/login" exact element={<Login />} />
+          <Route path="*" exact element={<NotFound />} />
         </Routes>
       </div>
     </Fragment>

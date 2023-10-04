@@ -52,7 +52,7 @@ const Nav = ({ authedUser, dispatch }) => {
             <li>
               <Link
                 className={"nav-link " + (path === "/new" ? "active" : "")}
-                to="/new"
+                to="/add"
               >
                 New
               </Link>

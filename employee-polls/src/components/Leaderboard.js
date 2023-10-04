@@ -49,8 +49,14 @@ const mapStateToProps = ({ users }) => ({
     .map((user) => ({
       ...user,
       answeredCount: Object.values(user.answers).length,
+      questionsCount: user.questions.length,
     }))
-    .sort((a, b) => b.answeredCount - a.answeredCount),
+    .sort(
+      (a, b) =>
+        b.answeredCount +
+        b.questionsCount -
+        (a.answeredCount + a.questionsCount)
+    ),
 });
 
 export default connect(mapStateToProps)(Leaderboard);
