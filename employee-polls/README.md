@@ -8,9 +8,15 @@ In the "Employee Polls" Project, you'll build a web app that lets an employee cr
 
 In your app, users will be able to answer polls, see which polls they haven’t answered, see how other people have voted, post polls, and see the ranking of users on the leaderboard.
 
+
 ## Available Scripts
 
+First, clone or download the project
 In the project directory, you can run:
+
+### `npm install`
+
+Install dependencies for app
 
 ### `npm start`
 
