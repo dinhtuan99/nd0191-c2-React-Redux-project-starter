@@ -12,6 +12,7 @@ In your app, users will be able to answer polls, see which polls they haven’t 
 ## Available Scripts
 
 First, clone or download the project
+
 In the project directory, you can run:
 
 ### `npm install`
