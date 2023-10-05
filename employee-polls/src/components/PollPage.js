@@ -1,6 +1,11 @@
 import { connect } from "react-redux";
 import { handleAnswerQuestion } from "../actions/questions";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  Navigate,
+} from "react-router-dom";
 import { useState } from "react";
 
 const withRouter = (Component) => {
@@ -16,7 +21,7 @@ const withRouter = (Component) => {
 
 const PollPage = ({ question, optionClicked, users, dispatch }) => {
   const [activeOption, setActiveOption] = useState(optionClicked);
-
+  if (!question) return <Navigate to="/notfound" />;
   const avatarURL = users[question.author].avatarURL;
 
   const handleChooseOptionOne = (e) => {
@@ -33,11 +38,11 @@ const PollPage = ({ question, optionClicked, users, dispatch }) => {
     dispatch(handleAnswerQuestion(question.id, "optionTwo"));
   };
 
-  const calcPercentageVoted = () => {
+  const calcPercentageVoted = (option) => {
     const optionOneVoted = question.optionOne.votes.length;
     const optionTwoVoted = question.optionTwo.votes.length;
     const totalVoted = optionOneVoted + optionTwoVoted;
-    return activeOption === "optionOne"
+    return option === "optionOne"
       ? ` ${((optionOneVoted / totalVoted) * 100).toFixed(2)}%`
       : ` ${((optionTwoVoted / totalVoted) * 100).toFixed(2)}%`;
   };
@@ -68,11 +73,11 @@ const PollPage = ({ question, optionClicked, users, dispatch }) => {
               >
                 Click
               </button>
-              {activeOption === "optionOne" ? (
+              {activeOption ? (
                 <p>
                   {question.optionOne.votes.length +
                     " voted," +
-                    calcPercentageVoted()}
+                    calcPercentageVoted("optionOne")}
                 </p>
               ) : (
                 ""
@@ -94,11 +99,11 @@ const PollPage = ({ question, optionClicked, users, dispatch }) => {
               >
                 Click
               </button>
-              {activeOption === "optionTwo" ? (
+              {activeOption ? (
                 <p>
                   {question.optionTwo.votes.length +
                     " voted," +
-                    calcPercentageVoted()}
+                    calcPercentageVoted("optionTwo")}
                 </p>
               ) : (
                 ""
@@ -117,6 +122,7 @@ const mapStateToProps = ({ questions, users, authedUser }, props) => {
     .sort((a, b) => b.timestamp - a.timestamp)
     .find((question) => question.id === id);
   let optionClicked;
+  if(!question) return {};
   if (question.optionOne.votes.includes(authedUser.id)) {
     optionClicked = "optionOne";
   }
